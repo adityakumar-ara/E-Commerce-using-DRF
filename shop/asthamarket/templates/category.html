@@ -1,0 +1,21 @@
+{% extends 'base.html' %}
+{% load static %}
+{% block extra_css %}
+<link rel="stylesheet" href="{% static 'css/category.css' %}">
+{% endblock %}
+
+{% block title %}Category - AsthaMarket{% endblock %}
+
+
+{% block content %}
+<div class="container">
+    <h1 class="text-center mb-4">Our Categories</h1>
+    <a href="#">
+        <div id="category-container" class="category-container row"></div>
+    </a>
+</div>
+{% endblock %}
+
+{% block extra_js %}
+<script src="{% static 'javascript/category.js' %}"></script>
+{% endblock %}

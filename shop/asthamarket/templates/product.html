@@ -1,0 +1,21 @@
+{% extends 'base.html' %}
+{% load static %}
+
+{% block title %}Products - AsthaMarket{% endblock %}
+
+{% block extra_css %}
+<link rel="stylesheet" href="{% static 'css/product.css' %}">
+{% endblock %}
+
+{% block content %}
+<div class="container my-5">
+    <h1 class="text-center mb-4">Our Products</h1>
+    
+    <!-- Products will be loaded here by product.js -->
+    <div id="product-container" class="row"></div>
+</div>
+{% endblock %}
+
+{% block extra_js %}
+<script src="{% static 'javascript/product.js' %}"></script>
+{% endblock %}

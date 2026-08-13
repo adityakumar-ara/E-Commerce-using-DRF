@@ -1,0 +1,55 @@
+/* General Body Styles */
+body {
+    font-family: 'Arial', sans-serif;
+    margin: 0;
+    padding: 0;
+    background-color: #f4f4f4; /* Light grey background */
+    color: #333; /* Dark grey text */
+    line-height: 1.6;
+}
+
+/* Bootstrap Overrides and Customizations */
+.navbar {
+    background-color: #3498db !important; /* Blue - using !important to override Bootstrap */
+    box-shadow: 0 2px 5px rgba(0,0,0,0.1);
+}
+
+.navbar-dark .navbar-nav .nav-link.active,
+.navbar-dark .navbar-nav .nav-link:hover {
+    color: #e67e22 !important; /* Orange accent for active/hover links */
+}
+
+.btn-primary {
+    background-color: #e67e22 !important; /* Orange */
+    border-color: #e67e22 !important;
+}
+
+.btn-primary:hover {
+    background-color: #d35400 !important; /* Darker orange */
+    border-color: #d35400 !important;
+}
+
+/* Main Content Area */
+main {
+    padding: 20px 0;
+    min-height: calc(100vh - 180px); /* Adjusted for potentially taller footer/header */
+}
+
+/* Footer Styles */
+footer {
+    background-color: #333; /* Dark grey */
+    color: white;
+    padding: 30px 0;
+    font-size: 14px;
+}
+
+.footer-links a {
+    color: white;
+    text-decoration: none;
+    margin: 0 10px;
+    transition: color 0.3s ease;
+}
+
+.footer-links a:hover {
+    color: #e67e22; /* Orange accent */
+}

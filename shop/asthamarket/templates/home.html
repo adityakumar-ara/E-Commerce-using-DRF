@@ -1,0 +1,20 @@
+{% extends 'base.html' %}
+{% load static %}
+
+{% block title %}Home - AsthaMarket{% endblock %}
+
+{% block extra_css %}
+    <link rel="stylesheet" href="{% static 'css/home.css' %}">
+{% endblock %}
+
+{% block content %}
+    <div class="container"> {# Added container for consistent spacing #}
+        <h1>Welcome to Our Store</h1>
+        <!-- JavaScript saara data is grid div ke andar daalega -->
+        <div id="product-container" class="products-grid"></div>
+    </div>
+{% endblock %}
+
+{% block extra_js %}
+    <script src="{% static 'javascript/home.js' %}"></script>
+{% endblock %}
