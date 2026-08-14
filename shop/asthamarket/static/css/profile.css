@@ -1,0 +1,18 @@
+#profile-container{
+    display: flex;
+    align-items: center;
+    justify-content: center;
+    border-radius: 12px;
+
+    
+
+}
+.profile-card{
+    border: 1px solid black;
+    border-radius: 12px;
+    background: #adadce;
+    text-align: center;
+    align-items: center;
+    justify-content: center;
+    width: 500px ;
+}   

@@ -6,7 +6,8 @@ from rest_framework.response import Response # Keep for product view
 from .models import *
 from .serializers import *
 from django.contrib.auth import authenticate, login as auth_login
-from rest_framework.decorators import api_view
+from rest_framework.decorators import api_view, permission_classes
+from rest_framework.permissions import IsAuthenticated
 
 # Create your views here.
 def home(request):
@@ -75,7 +76,16 @@ def category(request):
 
 @api_view(['GET'])    
 def category_api(request):
-    categoris = Category.objects.all()
-    serializer = CategorySerializer(categoris, many = True)
-    return Response(serializer.data)
+        categoris = Category.objects.all()
+        serializer = CategorySerializer(categoris, many = True)
+        return Response(serializer.data)
+
+def profile(request):
+    return render(request, 'profile.html')
     
+@api_view(['GET'])
+@permission_classes([IsAuthenticated]) 
+def profile_api(request):
+        serializer = UserProfileSerializer(request.user)
+        print(serializer)
+        return Response(serializer.data) 
