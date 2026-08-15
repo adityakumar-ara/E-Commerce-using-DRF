@@ -20,3 +20,10 @@ class UserProfileSerializer(serializers.ModelSerializer)    :
     class Meta:
        model = User
        fields = ['id', 'username', 'email', 'first_name', 'last_name']
+
+class WishlistSerializer(serializers.ModelSerializer):
+    product_details = ProductSerializer(source='product', read_only=True)
+
+    class Meta:
+        model = Wishlist
+        fields = ['id', 'user', 'product', 'product_details', 'created_at']

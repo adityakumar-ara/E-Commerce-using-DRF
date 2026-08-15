@@ -1,91 +1,113 @@
 from django.shortcuts import render, redirect, get_object_or_404
 from django.contrib import messages
 from django.contrib.auth.models import User
-from rest_framework.decorators import api_view # Keep for product view
-from rest_framework.response import Response # Keep for product view
+from rest_framework import status
+from rest_framework.generics import ListAPIView, RetrieveAPIView
+from rest_framework.response import Response
+from rest_framework.views import APIView
 from .models import *
 from .serializers import *
 from django.contrib.auth import authenticate, login as auth_login
-from rest_framework.decorators import api_view, permission_classes
+from django.contrib.auth.decorators import login_required
+from django.views.decorators.csrf import ensure_csrf_cookie
 from rest_framework.permissions import IsAuthenticated
 
 # Create your views here.
+#home page
 def home(request):
     return render(request, 'home.html')
 
-
-@api_view(['GET', 'POST'])
-def signup(request):
-    if request.method == 'GET':
+#Signup view page and api
+class SignupView(APIView):
+    def get(self, request):
         return render(request, 'signup.html')
 
-    data = request.data
-    name = data.get('name')
-    email = data.get('email')
-    password = data.get('password')
+    def post(self, request):
+        name = request.data.get('name')
+        email = request.data.get('email')
+        password = request.data.get('password')
 
-    if not name or not email or not password:
-        return Response({'error': 'Name, email, and password are required.'}, status=400)
+        if not name or not email or not password:
+            return Response({'error': 'Name, email, and password are required.'}, status=status.HTTP_400_BAD_REQUEST)
 
-    if len(password) < 8:
-        return Response({'error': 'Password must be at least 8 characters.'}, status=400)
+        if len(password) < 8:
+            return Response({'error': 'Password must be at least 8 characters.'}, status=status.HTTP_400_BAD_REQUEST)
 
-    if User.objects.filter(email=email).exists():
-        return Response({'error': f"Email '{email}' is already registered."}, status=400)
+        if User.objects.filter(email=email).exists():
+            return Response({'error': f"Email '{email}' is already registered."}, status=status.HTTP_400_BAD_REQUEST)
 
-    user = User.objects.create_user(username=email, email=email, password=password, first_name=name)
-    return Response({'message': 'Your account has been created successfully!'}, status=201)
+        User.objects.create_user(username=email, email=email, password=password, first_name=name)
+        return Response({'message': 'Your account has been created successfully!'}, status=status.HTTP_201_CREATED)
 
 
+#product view page and api
+@ensure_csrf_cookie
 def product_page(request):
     return render(request, 'product.html')
 
-@api_view(['GET'])
-def product_api(request):
-    all_product = Product.objects.filter(is_available=True)
-    serializer = ProductSerializer(all_product, many=True)
-    return Response(serializer.data)
+class ProductApiView(ListAPIView):
+    serializer_class = ProductSerializer
 
-@api_view(['GET', 'POST'])
-def login(request):
-    if request.method == "GET":
+    def get_queryset(self):
+        return Product.objects.filter(is_available=True)
+
+
+#login page view and api
+class LoginView(APIView):
+    def get(self, request):
         return render(request, 'login.html')
-    
-    data = request.data
-    email = data.get('email')
-    password = data.get('password')
 
-    if not email or not password:
-        return Response({'error': 'Email and password are required.'}, status=400)
+    def post(self, request):
+        email = request.data.get('email')
+        password = request.data.get('password')
 
-    # 3. Check karo ki kya user database mein exist karta hai aur password sahi hai?
-    
-    user = authenticate(request, username=email, password=password)
+        if not email or not password:
+            return Response({'error': 'Email and password are required.'}, status=status.HTTP_400_BAD_REQUEST)
 
-    if user is not None:
-     
+        user = authenticate(request, username=email, password=password)
+        if user is None:
+            return Response({'error': 'Invalid email or password.'}, status=status.HTTP_401_UNAUTHORIZED)
+
         auth_login(request, user)
-        return Response({'message': 'Login successful!'}, status=200)
-    else:
-      
-        return Response({'error': 'Invalid email or password.'}, status=401)
+        return Response({'message': 'Login successful!'}, status=status.HTTP_200_OK)
    
-   
+
+#Category page view and API   
 def category(request):   
     return render(request, 'category.html')
 
-@api_view(['GET'])    
-def category_api(request):
-        categoris = Category.objects.all()
-        serializer = CategorySerializer(categoris, many = True)
-        return Response(serializer.data)
+class CategoryApiView(ListAPIView):
+    queryset = Category.objects.all()
+    serializer_class = CategorySerializer
 
+#profile view and API
 def profile(request):
     return render(request, 'profile.html')
     
-@api_view(['GET'])
-@permission_classes([IsAuthenticated]) 
-def profile_api(request):
-        serializer = UserProfileSerializer(request.user)
-        print(serializer)
-        return Response(serializer.data) 
+class ProfileApiView(RetrieveAPIView):
+    serializer_class = UserProfileSerializer
+    permission_classes = [IsAuthenticated]
+
+    def get_object(self):
+        return self.request.user
+ 
+#Wishlist view page and api 
+class WishlistApiView(APIView):
+    permission_classes = [IsAuthenticated]
+
+    def get(self, request):
+        wishlist_items = Wishlist.objects.filter(user=request.user)
+        serializer = WishlistSerializer(wishlist_items, many=True)
+        return Response(serializer.data)
+
+    def post(self, request):
+        product = get_object_or_404(Product, pk=request.data.get('product'))
+        wishlist_item, created = Wishlist.objects.get_or_create(user=request.user, product=product)
+        serializer = WishlistSerializer(wishlist_item)
+        response_status = status.HTTP_201_CREATED if created else status.HTTP_200_OK
+        message = 'Added to wishlist.' if created else 'This product is already in your wishlist.'
+        return Response({'message': message, 'wishlist_item': serializer.data}, status=response_status)
+    
+@login_required(login_url='login')
+def Wishlist(request):
+    return render(request,'wishlist.html')

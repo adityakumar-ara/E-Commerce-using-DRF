@@ -1,0 +1,18 @@
+{% extends 'base.html' %}
+{% load static %}
+{% block title %}Your Wishlist - AsthaMarket{% endblock %}
+{% block extra_css %}
+<link rel="stylesheet" href="{% static 'css/wishlist.css' %}">
+{% endblock %}
+{% block content %}
+<section class="container my-5">
+    <div class="wishlist-heading">
+        <p class="text-uppercase mb-1">Saved for later</p>
+        <h1>Your Wishlist</h1>
+    </div>
+    <div id="wishlist-container" class="row g-4"></div>
+</section>
+{% endblock %}
+{% block extra_js %}
+<script src="{% static 'javascript/wishlist.js' %}"></script>
+{% endblock %}
