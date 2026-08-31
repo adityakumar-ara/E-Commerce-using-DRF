@@ -12,5 +12,5 @@ urlpatterns = [
   path('profile/', views.profile, name='profile'),
   path('api/profile/', views.ProfileApiView.as_view(), name='profile-api'),
   path('api/wishlist/', views.WishlistApiView.as_view(), name='wishlist-api'),
-  path('wishlist/', views.Wishlist, name='wishlist'),
+  path('wishlist/', views.wishlist_view, name='wishlist'),
 ]

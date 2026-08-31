@@ -1,4 +1,5 @@
 from rest_framework import serializers
+
 from django.contrib.auth.models import User
 from .models import *
 
@@ -27,3 +28,8 @@ class WishlistSerializer(serializers.ModelSerializer):
     class Meta:
         model = Wishlist
         fields = ['id', 'user', 'product', 'product_details', 'created_at']
+class AddToCardSerializer(serializers.ModelSerializer):
+    product_details = ProductSerializer(source='product', read_only=True)
+    class Meta:
+        models = User
+        fields = ['id', 'user', 'product', 'product_details', 'created_at']        

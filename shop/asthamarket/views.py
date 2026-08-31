@@ -92,6 +92,7 @@ class ProfileApiView(RetrieveAPIView):
         return self.request.user
  
 #Wishlist view page and api 
+from .models import Wishlist, Product 
 class WishlistApiView(APIView):
     permission_classes = [IsAuthenticated]
 
@@ -109,5 +110,5 @@ class WishlistApiView(APIView):
         return Response({'message': message, 'wishlist_item': serializer.data}, status=response_status)
     
 @login_required(login_url='login')
-def Wishlist(request):
+def wishlist_view(request):
     return render(request,'wishlist.html')

@@ -30,7 +30,7 @@ userform.addEventListener('submit', async (e) => {
         if(response.ok){
             alert(result.message);
             userform.reset();
-            // window.location.href = '/login.html'; // Chaho toh login page par bhej do
+            window.location.href = '/login.html'; // Chaho toh login page par bhej do
          }
         else {
             alert(result.error); 
